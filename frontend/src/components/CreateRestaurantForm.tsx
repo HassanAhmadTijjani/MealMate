@@ -5,8 +5,30 @@ import FormField from "./ui/FormField";
 
 const CreateRestaurantForm = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState(""); const [address, setAddress] = useState(""); const [phoneNumber, setPhoneNumber] = useState(""); const [email, setEmail] = useState(""); const [description, setDescription] = useState(""); const [isOpen, setIsOpen] = useState(true); const [logo, setLogo] = useState(""); const [isSubmitting, setIsSubmitting] = useState(false); const [error, setError] = useState<string | null>(null);
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => { event.preventDefault(); setError(null); setIsSubmitting(true); try { await createRestaurant({ name, address, phoneNumber, email, description: description || null, isOpen, logo: logo || null }); navigate("/restaurants"); } catch { setError("We couldn’t create this restaurant. Check the details and try again."); } finally { setIsSubmitting(false); } };
+    const [name, setName] = useState("");
+    const [address, setAddress] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
+    const [description, setDescription] = useState("");
+    const [isOpen, setIsOpen] = useState(true);
+    const [logo, setLogo] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setError(null);
+        setIsSubmitting(true);
+        try {
+            await createRestaurant({
+                name, address, phoneNumber, email, description: description || null, isOpen, logo: logo || null
+            });
+            navigate("/restaurants");
+        } catch {
+            setError("We couldn`t create this restaurant. Check the details and try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
     return (
         <form onSubmit={handleSubmit} className="space-y-8">
             {error && <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800" role="alert">

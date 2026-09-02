@@ -1,0 +1,6 @@
+namespace MealMate.Application.Common.Interfaces;
+
+public interface IJwtTokenService
+{
+    Task<string> GenerateTokenAsync(string userId, string email, IEnumerable<string> roles);
+}
