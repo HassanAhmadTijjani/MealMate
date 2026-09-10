@@ -15,6 +15,8 @@ public static class DependencyInjection
         services.AddDbContext<MealMateDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
         services.AddIdentityCore<ApplicationUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<MealMateDbContext>();
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+        services.AddScoped<IFoodItemRepository, FoodItemRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.Configure<JwtOptions>(

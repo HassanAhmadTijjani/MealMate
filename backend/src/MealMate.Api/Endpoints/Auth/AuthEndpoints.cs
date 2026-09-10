@@ -49,8 +49,8 @@ public static class AuthEndpoints
                 new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None,
+                    Secure = false,         //Temporary for development
+                    SameSite = SameSiteMode.Lax,        //Temporary for development
                     Path = "/"
                 });
             return Results.Ok(new

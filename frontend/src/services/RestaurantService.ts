@@ -17,7 +17,7 @@ function getCsrfToken(): string | null {
 
 // const API_BASE_URL = "http://localhost:5234/api/restaurants";
 export async function getRestaurant(): Promise<Restaurant[]>{
-    console.log('Base URL:', API_BASE_URL);
+    // console.log('Base URL:', API_BASE_URL);
     const response = await fetch(`${API_BASE_URL}/api/restaurants`, {
         
         credentials: "include",
