@@ -1,11 +1,15 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Footer from "../components/layout/Footer";
+import Navbar from "../components/layout/Navbar";
 
 const MainLayouts = () => (
-  <div className="min-h-screen bg-cream text-ink">
+  <div className="min-h-screen bg-meal-background text-meal-text">
     <Navbar />
-    <main><Outlet /></main>
+
+    <main>
+      <Outlet />
+    </main>
+
     <Footer />
   </div>
 );

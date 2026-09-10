@@ -1,5 +1,5 @@
 using MealMate.Api.Endpoints.Auth;
-using MealMate.Api.Endpoints.Restaurants;
+using MealMate.Api.Endpoints.Restaurant;
 using MealMate.Application;
 using MealMate.Infrastructure;
 using MealMate.Infrastructure.Identity;
@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using MealMate.Api.Security;
+using MealMate.Api.Endpoints.FoodItem;
+using MealMate.Api.Endpoints.Category;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +77,8 @@ using (var scope = app.Services.CreateScope())
 // EndPoints
 app.MapRestaurantEndpoints();
 app.MapAuthEndpoints();
+app.MapFoodItemEndpoints();
+app.MapCategoryEndpoints();
 
 
 // CSRF Token
@@ -86,9 +90,9 @@ app.MapGet("/api/auth/csrf-token", (HttpResponse response) =>
 
     response.Cookies.Append("csrfToken", token, new CookieOptions
     {
-        HttpOnly = false,
-        Secure = true,
-        SameSite = SameSiteMode.None,
+        HttpOnly = true,
+        Secure = false,         //Temporary for development
+        SameSite = SameSiteMode.Lax,            //Temporary for development
         Path = "/"
     });
 

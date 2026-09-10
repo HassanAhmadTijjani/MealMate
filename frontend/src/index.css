@@ -1,23 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Manrope", "DM Sans", ui-sans-serif, sans-serif;
-  --color-ink: #17201d;
-  --color-muted: #64716c;
-  --color-moss: #285b4d;
-  --color-moss-dark: #183f35;
-  --color-sage: #e5f0e9;
-  --color-coral: #e9694f;
-  --color-cream: #f8f7f2;
+  --color-meal-primary: #163a32;
+  --color-meal-primary-light: #4f7a6a;
+
+  --color-meal-background: #f7f3ea;
+  --color-meal-surface: #fffcf6;
+
+  --color-meal-accent: #d96c4a;
+  --color-meal-gold: #e5b85c;
+
+  --color-meal-text: #17211e;
+  --color-meal-muted: #718079;
 }
 
-:root { color: #17201d; background: #f8f7f2; font-family: "DM Sans", sans-serif; font-synthesis: none; }
-* { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; }
-button, input, textarea { font: inherit; }
-button { cursor: pointer; }
-.display { font-family: "Manrope", sans-serif; letter-spacing: -0.04em; }
-.grain { position: relative; }
-.grain::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .18; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E"); }
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f7f3ea;
+  color: #17211e;
+  font-family: Arial, Helvetica, sans-serif;
+}

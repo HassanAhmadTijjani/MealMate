@@ -1,25 +1,36 @@
 using MealMate.Application.Common.Interfaces;
-using MealMate.Application.Features.Restaurants.Commands.UpdateRestaurant;
 using MediatR;
 
-namespace MealMAte.Application.Features.Restaurants.Commands.UpdateRestaurant;
-public sealed record UpdateRestaurantCommandHandler(IRestaurantRepository RestaurantRepository) : IRequestHandler<UpdateRestaurantCommand, bool>
+namespace MealMate.Application.Features.Restaurants.Commands.UpdateRestaurant;
+
+public sealed class UpdateRestaurantCommandHandler(
+    IRestaurantRepository restaurantRepository)
+    : IRequestHandler<UpdateRestaurantCommand, bool>
 {
-    private readonly IRestaurantRepository _restaurantRepository = RestaurantRepository;
-    public async Task<bool> Handle(UpdateRestaurantCommand request, CancellationToken cancellationToken)
+    private readonly IRestaurantRepository _restaurantRepository = restaurantRepository;
+
+    public async Task<bool> Handle(
+        UpdateRestaurantCommand request,
+        CancellationToken cancellationToken)
     {
-        var restaurant = await _restaurantRepository.GetByIdAsync(request.Id);
-        if (restaurant is null) return false;
+        var restaurant = await _restaurantRepository.GetAsync();
+
+        if (restaurant is null)
+            return false;
+
         restaurant.UpdateDetails(
-request.Name,
-request.Address,
-request.PhoneNumber,
-request.Email,
-request.Description,
-request.IsOpen,
-request.Logo
-        );
+     request.Name,
+     request.Address,
+     request.PhoneNumber,
+     request.Email,
+     request.Description,
+     request.Logo
+ );
+
+        restaurant.SetOpenStatus(request.IsOpen);
+
         await _restaurantRepository.UpdateAsync(restaurant);
+
         return true;
     }
 }
