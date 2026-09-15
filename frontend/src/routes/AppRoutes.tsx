@@ -9,6 +9,7 @@ import LoginPage from "../pages/LoginPage";
 import SecurityLabPage from "../pages/SecurityLabPage";
 import RegisterPage from "../pages/RegisterPage";
 import ContactPage from "../pages/ContactPage";
+import Gallery from "../pages/Gallery";
 
 const AppRoutes = () => {
     return (
@@ -23,7 +24,7 @@ const AppRoutes = () => {
             <Route path="/auth/register" element={<RegisterPage />} />
             <Route path="/lab" element={<SecurityLabPage />} />
             <Route path="/contact" element={<ContactPage />} />
-
+            <Route path="/gallery"  element={<Gallery />} />
             </Route>
         </Routes>
     );
