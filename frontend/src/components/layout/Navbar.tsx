@@ -7,7 +7,7 @@ const Navbar = () => {
 
         <div className="hidden items-center gap-8 md:flex">
           <a href="/" className="text-sm font-medium text-meal-text transition hover:text-meal-accent" >  Home </a>
-          <a href="/#about" className="text-sm font-medium text-meal-muted transition hover:text-meal-accent" > About</a>
+          <a href="/gallery" className="text-sm font-medium text-meal-muted transition hover:text-meal-accent" > Gallery</a>
           <a href="/menu" className="text-sm font-medium text-meal-muted transition hover:text-meal-accent" > Menu </a>
           <a href="/contact" className="text-sm font-medium text-meal-muted transition hover:text-meal-accent" >  Contact </a>
         </div>

@@ -1,4 +1,5 @@
 using MealMate.Application.Common.Interfaces;
+using MealMate.Application.Common.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace MealMate.Infrastructure.Identity;
@@ -69,5 +70,44 @@ result.Errors.Select(error => error.Description).ToArray()
             token,
             []
         );
+    }
+
+    // GET USER BY ID
+    public async Task<UserIdentityModel?> GetUserByIdAsync(string userId)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null) return null;
+        return new UserIdentityModel(
+            user.Id,
+            user.FirstName,
+            user.LastName,
+            user.Email,
+            user.PhoneNumber,
+            user.Address
+        );
+    }
+
+    public async Task<bool> UpdateUserAsync(
+    string userId,
+    string firstName,
+    string lastName,
+    string? phoneNumber,
+    string? address)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user is null)
+        {
+            return false;
+        }
+
+        user.FirstName = firstName;
+        user.LastName = lastName;
+        user.PhoneNumber = phoneNumber;
+        user.Address = address;
+
+        var result = await userManager.UpdateAsync(user);
+
+        return result.Succeeded;
     }
 }

@@ -14,17 +14,17 @@ const CTA = () => {
                   <h3 className='underline font-bold uppercase'>Explore our menu</h3>
                   <div className='grid lg:grid-cols-3'>
                       <div className="px-4 py-6 flex items-center justify-center flex-col">
-                          <img src="/models/layer-1.svg" alt="" />
+                          <img src="/models/layer-1.svg" alt="" className='hover:animate-ping' />
                           <h1 className="font-bold text-2xl p-2 ">Select nearest location</h1>
                           <p>Select the restaurant closest to your pick-up/delivery location.</p>
                      </div>
                       <div className="px-4 py-6 flex items-center justify-center flex-col">
-                          <img src="/models/layer-2.svg" alt="" />
+                          <img src="/models/layer-2.svg" alt="" className='hover:animate-ping' />
                           <h1 className="font-bold text-2xl p-2 ">Choose your meal</h1>
                           <p>Place your order by choosing from numerous delicacies on our menu.</p>
                      </div>
                       <div className="px-4 py-6 flex items-center justify-center flex-col">
-                          <img src="/models/layer-3.svg" alt="" />
+                          <img src="/models/layer-3.svg" alt="" className='hover:animate-ping' />
                           <h1 className="font-bold text-2xl p-2 ">Enjoy your meal</h1>
                           <p>Pick up your tasty meal in-store or have it delivered to your doorstep.</p>
                      </div>

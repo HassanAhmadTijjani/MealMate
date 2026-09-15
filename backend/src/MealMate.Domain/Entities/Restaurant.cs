@@ -28,7 +28,6 @@ public class Restaurant : BaseEntity
         if (string.IsNullOrWhiteSpace(email)) throw new ArgumentException("Restaurant email is required.", nameof(email));
 
         Id = Guid.NewGuid();
-
         Name = name.Trim();
         Address = address.Trim();
         PhoneNumber = phoneNumber.Trim();
@@ -61,7 +60,6 @@ public class Restaurant : BaseEntity
         Email = email.Trim();
         Description = description?.Trim();
         Logo = logo;
-
         UpdatedAt = DateTime.UtcNow;
     }
 

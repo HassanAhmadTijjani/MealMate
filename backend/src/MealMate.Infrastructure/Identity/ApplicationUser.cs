@@ -7,5 +7,5 @@ public class ApplicationUser : IdentityUser
     public string LastName { get; set; } = string.Empty;
 
     // MealMate-specific-info
-    public string? Address { get; private set; }
+    public string? Address { get;  set; }
 }
