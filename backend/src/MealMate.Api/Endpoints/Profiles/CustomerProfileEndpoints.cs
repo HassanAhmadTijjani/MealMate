@@ -29,9 +29,7 @@ public static class CustomerProfileEndpoints
                request.Address
            );
            var updated = await sender.Send(command);
-           return updated
-               ? Results.NoContent()
-               : Results.NotFound();
+           return updated ? Results.NoContent() : Results.NotFound();
        });
 
         return endpoints;
