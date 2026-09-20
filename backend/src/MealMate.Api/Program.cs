@@ -10,6 +10,7 @@ using System.Text;
 using MealMate.Api.Endpoints.FoodItem;
 using MealMate.Api.Endpoints.Category;
 using MealMate.Api.Endpoints.Profiles;
+using MealMate.Api.Endpoints.CustomerMenus;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -81,6 +82,7 @@ app.MapAuthEndpoints();
 app.MapFoodItemEndpoints();
 app.MapCategoryEndpoints();
 app.MapCustomerProfileEndpoints();
+app.MapCustomerMenuEndpoints();
 
 
 // CSRF Token

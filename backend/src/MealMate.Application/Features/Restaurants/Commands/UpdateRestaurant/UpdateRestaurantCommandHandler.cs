@@ -9,23 +9,20 @@ public sealed class UpdateRestaurantCommandHandler(
 {
     private readonly IRestaurantRepository _restaurantRepository = restaurantRepository;
 
-    public async Task<bool> Handle(
-        UpdateRestaurantCommand request,
-        CancellationToken cancellationToken)
+    public async Task<bool> Handle(UpdateRestaurantCommand request,CancellationToken cancellationToken)
     {
         var restaurant = await _restaurantRepository.GetAsync();
 
-        if (restaurant is null)
-            return false;
+        if (restaurant is null) return false;
 
         restaurant.UpdateDetails(
-     request.Name,
-     request.Address,
-     request.PhoneNumber,
-     request.Email,
-     request.Description,
-     request.Logo
- );
+            request.Name,
+            request.Address,
+            request.PhoneNumber,
+            request.Email,
+            request.Description,
+            request.Logo
+        );
 
         restaurant.SetOpenStatus(request.IsOpen);
 

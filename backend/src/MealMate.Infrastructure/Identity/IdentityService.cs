@@ -16,13 +16,12 @@ public class IdentityService(UserManager<ApplicationUser> userManager, RoleManag
         };
         var result = await userManager.CreateAsync(user, password);
         return (
-
-result.Succeeded,
-result.Errors.Select(error => error.Description).ToArray()
+            result.Succeeded,
+            result.Errors.Select(error => error.Description).ToArray()
         );
     }
 
-// ADD ROLE
+    // ADD ROLE
     public async Task<bool> AddToRoleAsync(string email, string role)
     {
         var user = await userManager.FindByEmailAsync(email);
@@ -47,11 +46,7 @@ result.Errors.Select(error => error.Description).ToArray()
             );
         }
 
-        var passwordValid = await userManager.CheckPasswordAsync(
-            user,
-            password
-        );
-
+        var passwordValid = await userManager.CheckPasswordAsync(user, password);
         if (!passwordValid)
         {
             return (
@@ -88,18 +83,15 @@ result.Errors.Select(error => error.Description).ToArray()
     }
 
     public async Task<bool> UpdateUserAsync(
-    string userId,
-    string firstName,
-    string lastName,
-    string? phoneNumber,
-    string? address)
+        string userId,
+        string firstName,
+        string lastName,
+        string? phoneNumber,
+        string? address)
     {
         var user = await userManager.FindByIdAsync(userId);
 
-        if (user is null)
-        {
-            return false;
-        }
+        if (user is null) return false;
 
         user.FirstName = firstName;
         user.LastName = lastName;

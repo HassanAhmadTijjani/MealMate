@@ -7,13 +7,9 @@ public class RegisterUserCommandHandler(IIdentityService identityService) : IReq
 {
     public async Task<(bool Succeeded, string[] Errors)> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var result = await identityService.CreateUserAsync(
-            request.Email,
-            request.Password);
+        var result = await identityService.CreateUserAsync(request.Email, request.Password);
         if (!result.Succeed) return result;
-        var roleAdded = await identityService.AddToRoleAsync(   
-            request.Email,
-            "Customer");
+        var roleAdded = await identityService.AddToRoleAsync(request.Email, "Customer");
         if (!roleAdded)
         {
             return (
@@ -21,7 +17,6 @@ public class RegisterUserCommandHandler(IIdentityService identityService) : IReq
                 ["User was created, but the Customer role could not be assigned."]
             );
         }
-
         return (true, []);
     }
 }
