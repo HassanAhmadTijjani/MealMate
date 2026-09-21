@@ -33,6 +33,7 @@ public sealed record AddToCartCommandHandler(
             cart.AddItem(foodItem.Id, request.Quantity);
             await _cartRepository.UpdateAsync(cart);
         }
+        cart = await _cartRepository.GetByCustomerIdAsync(userId) ?? throw new KeyNotFoundException("Cart was not found after saving.");
         // Get CartItems and make a list 
         var items = cart.Items.Select(item => new CartItemResponse(
             item.FoodItem.Id,

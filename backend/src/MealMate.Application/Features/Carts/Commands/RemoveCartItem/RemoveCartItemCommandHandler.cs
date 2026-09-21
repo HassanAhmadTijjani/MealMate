@@ -2,7 +2,7 @@ using MealMate.Application.Common.Interfaces;
 using MealMate.Application.Common.Models.Carts;
 using MediatR;
 
-namespace MealMate.Application.Features.Carts.Commands.RemoveCart;
+namespace MealMate.Application.Features.Carts.Commands.RemoveCartItem;
 
 public sealed record RemoveCartItemCommandHandler(ICartRepository CartRepository, ICurrentUserService CurrentUserService) : IRequestHandler<RemoveCartItemCommand, CartResponse>
 {

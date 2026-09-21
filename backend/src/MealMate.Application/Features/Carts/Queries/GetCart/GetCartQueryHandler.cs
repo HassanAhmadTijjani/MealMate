@@ -8,7 +8,7 @@ public sealed record GetCartQueryHandler(ICartRepository CartRepository, ICurren
 {
     private readonly ICartRepository _cartRepository = CartRepository;
     private readonly ICurrentUserService _currentUserService = CurrentUserService;
-    public async Task<CartResponse> Handle(GetCartQuery request, CancellationToken cancellationToken)
+    public async Task<CartResponse?> Handle(GetCartQuery request, CancellationToken cancellationToken)
     {
         var userId = _currentUserService.UserId;
         var cart = await _cartRepository.GetByCustomerIdAsync(userId);
