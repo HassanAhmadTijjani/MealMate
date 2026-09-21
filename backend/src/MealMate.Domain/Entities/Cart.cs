@@ -18,10 +18,17 @@ public class Cart
 
     public Cart(string customerId)
     {
-        if (string.IsNullOrWhiteSpace(customerId))throw new ArgumentException( "Customer ID is required.", nameof(customerId));
+        if (string.IsNullOrWhiteSpace(customerId)) throw new ArgumentException("Customer ID is required.", nameof(customerId));
         Id = Guid.NewGuid();
         CustomerId = customerId;
-        CreatedAt = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
+        CreatedAt = now;
+        UpdatedAt = now;
+    }
+    
+    public void Touch()
+    {
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void AddItem(Guid foodItemId, int quantity)
@@ -38,12 +45,14 @@ public class Cart
             return;
         }
         Items.Add(new CartItem(foodItemId, quantity));
+        Touch();
     }
 
     public void ChangeItemQuantity(Guid foodItemId, int quantity)
     {
         var item = Items.FirstOrDefault(item => item.FoodItemId == foodItemId) ?? throw new InvalidOperationException("Cart item was not found.");
         item.ChangeQuantity(quantity);
+        Touch();
     }
 
     public void RemoveItem(Guid foodItemId)
@@ -53,5 +62,6 @@ public class Cart
         );
         if (item is null) return;
         Items.Remove(item);
+        Touch();
     }
 }

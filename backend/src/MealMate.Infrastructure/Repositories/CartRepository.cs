@@ -16,7 +16,7 @@ public class CartRepository(MealMateDbContext context) : ICartRepository
 
     public async Task<Cart?> GetByCustomerIdAsync(string customerId)
     {
-      return await _context.Carts.Include(cart => cart.Items).ThenInclude(item => item.FoodItem).Include(userId => userId.Id).FirstOrDefaultAsync(cart => cart.CustomerId == customerId);  
+      return await _context.Carts.Include(cart => cart.Items).ThenInclude(item => item.FoodItem).FirstOrDefaultAsync(cart => cart.CustomerId == customerId);  
     }
 
     public async Task UpdateAsync(Cart cart)
