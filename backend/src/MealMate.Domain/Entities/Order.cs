@@ -86,21 +86,56 @@ public class Order
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void UpdateStatus(OrderStatus newOrderStatus)
-    {
-        OrderStatus = newOrderStatus;
-        UpdatedAt = DateTime.UtcNow;
-    }
+    // public void UpdateStatus(OrderStatus newOrderStatus)
+    // {
+    //     OrderStatus = newOrderStatus;
+    //     UpdatedAt = DateTime.UtcNow;
+    // }
 
     public void Cancel()
     {
         if (OrderStatus is OrderStatus.Completed or OrderStatus.OutForDelivery or OrderStatus.Cancelled)
         {
-            throw new InvalidOperationException( "This order cannot be cancelled." );
+            throw new InvalidOperationException("This order cannot be cancelled.");
         }
 
         OrderStatus = OrderStatus.Cancelled;
 
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void Confirm()
+    {
+        if (OrderStatus != OrderStatus.Pending) throw new InvalidOperationException("Only pending orders can be confirmed.");
+        OrderStatus = OrderStatus.Confirmed;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void StartPreparing()
+    {
+        if (OrderStatus != OrderStatus.Confirmed) throw new InvalidOperationException("Only confirmed order can be preparing.");
+        OrderStatus = OrderStatus.Preparing;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void MarkAsReady()
+    {
+        if (OrderStatus != OrderStatus.Preparing) throw new InvalidOperationException("Only preparing orders can be ready.");
+        OrderStatus = OrderStatus.Ready;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void MarkAsOutForDelivery()
+    {
+        if (OrderType != OrderType.Delivery) throw new InvalidOperationException("Only delivery orders can be marked as out for delivery.");
+        if (OrderStatus != OrderStatus.Ready) throw new InvalidOperationException("Only ready order can be out for delivery.");
+        OrderStatus = OrderStatus.OutForDelivery;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void Complete()
+    {
+        if (OrderType == OrderType.Pickup && OrderStatus != OrderStatus.Ready) throw new InvalidOperationException(  "Only ready pickup orders can be completed." );
+
+        if (OrderType == OrderType.Delivery && OrderStatus != OrderStatus.OutForDelivery) throw new InvalidOperationException("Only orders that are out for delivery can be completed.");
+
+        OrderStatus = OrderStatus.Completed;
         UpdatedAt = DateTime.UtcNow;
     }
 }
