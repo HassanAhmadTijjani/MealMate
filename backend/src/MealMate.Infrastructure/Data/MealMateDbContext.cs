@@ -11,15 +11,17 @@ public class MealMateDbContext(DbContextOptions<MealMateDbContext> options)
     public DbSet<Restaurant> Restaurants => Set<Restaurant>();
     public DbSet<FoodItem> FoodItems => Set<FoodItem>();
     public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Cart> Carts => Set<Cart>();
+    public DbSet<CartItem> CartItems => Set<CartItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<FoodItem>()
-     .HasOne(foodItem => foodItem.Category)
-     .WithMany()
-     .HasForeignKey(foodItem => foodItem.CategoryId)
-     .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<FoodItem>().HasOne(foodItem => foodItem.Category).WithMany().HasForeignKey(foodItem => foodItem.CategoryId).OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            typeof(MealMateDbContext).Assembly
+        );
     }
 }

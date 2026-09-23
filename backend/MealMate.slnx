@@ -5,4 +5,7 @@
     <Project Path="src/MealMate.Domain/MealMate.Domain.csproj" />
     <Project Path="src/MealMate.Infrastructure/MealMate.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MealMate.Domain.Tests/MealMate.Domain.Tests.csproj" />
+  </Folder>
 </Solution>

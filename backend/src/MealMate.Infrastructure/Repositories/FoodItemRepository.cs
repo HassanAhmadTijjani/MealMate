@@ -34,4 +34,11 @@ public class FoodItemRepository(MealMateDbContext context) : IFoodItemRepository
         _context.FoodItems.Remove(foodItem);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<FoodItem>> GetAvailableAsync(Guid? categoryId)
+    {
+        var query = _context.FoodItems.AsNoTracking().Include(foodItem => foodItem.Category).Where(foodItem => foodItem.IsAvailable);
+        if (categoryId.HasValue) query = query.Where(foodItem => foodItem.CategoryId == categoryId.Value);
+        return await query.ToListAsync();
+    }
 }

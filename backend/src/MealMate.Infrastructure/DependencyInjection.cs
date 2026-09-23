@@ -20,10 +20,9 @@ public static class DependencyInjection
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();      //Whenever Application asks for ICurrentUserService, give it a CurrentUserService.
+        services.AddScoped<ICartRepository, CartRepository>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
-        services.Configure<JwtOptions>(
-configuration.GetSection(JwtOptions.SectionName)
-        );
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         return services;
     }
 

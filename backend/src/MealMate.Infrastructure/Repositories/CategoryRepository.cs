@@ -12,16 +12,12 @@ public class CategoryRepository(MealMateDbContext context)
 
     public async Task<List<Category>> GetAllAsync()
     {
-        return await _context.Categories
-            .AsNoTracking()
-            .ToListAsync();
+        return await _context.Categories.AsNoTracking().ToListAsync();
     }
 
     public async Task<Category?> GetByIdAsync(Guid id)
     {
-        return await _context.Categories
-            .AsNoTracking()
-            .FirstOrDefaultAsync(category => category.Id == id);
+        return await _context.Categories.AsNoTracking().FirstOrDefaultAsync(category => category.Id == id);
     }
 
     public async Task AddAsync(Category category)
