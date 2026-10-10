@@ -12,27 +12,27 @@ public static class RestaurantEndpoints
     public static IEndpointRouteBuilder MapRestaurantEndpoints(
         this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/api/restaurant", async (
-            CreateRestaurantRequest request,
-            ISender sender,
-            CancellationToken cancellationToken) =>
-        {
-            var command = new CreateRestaurantCommand(
-                request.Name,
-                request.Address,
-                request.PhoneNumber,
-                request.Email,
-                request.Description,
-                request.Logo);
+        // endpoints.MapPost("/api/restaurant", async (
+        //     CreateRestaurantRequest request,
+        //     ISender sender,
+        //     CancellationToken cancellationToken) =>
+        // {
+        //     var command = new CreateRestaurantCommand(
+        //         request.Name,
+        //         request.Address,
+        //         request.PhoneNumber,
+        //         request.Email,
+        //         request.Description,
+        //         request.Logo);
 
-            var restaurantId = await sender.Send(
-                command,
-                cancellationToken);
+        //     var restaurantId = await sender.Send(
+        //         command,
+        //         cancellationToken);
 
-            return Results.Created(     //201 Created
-                $"/api/restaurant/{restaurantId}",
-                new { id = restaurantId });
-        }).RequireAuthorization().AddEndpointFilter<CsrfEndpointFilter>();
+        //     return Results.Created(     //201 Created
+        //         $"/api/restaurant/{restaurantId}",
+        //         new { id = restaurantId });
+        // }).RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
 
         endpoints.MapGet("/api/restaurant", async (
      ISender sender,
@@ -74,7 +74,7 @@ public static class RestaurantEndpoints
             var updated = await sender.Send(command, cancellationToken);
             if (!updated) return Results.NotFound();
             return Results.NoContent();     //Produces a StatusCodes.Status204NoContent response.
-        }).RequireAuthorization().AddEndpointFilter<CsrfEndpointFilter>();
+        }).RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
 
         // Delete
     //     endpoints.MapDelete("/api/restaurants/{id:guid}", async (Guid id, ISender sender, CancellationToken cancellationToken) =>

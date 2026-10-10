@@ -30,7 +30,7 @@ public static class CategoryEndpoints
                 $"/api/category/{categoryId}",
                 new { id = categoryId }
             );
-        }).RequireAuthorization().AddEndpointFilter<CsrfEndpointFilter>();
+        }).RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
 
         // Get all
         group.MapGet("", async (
@@ -72,7 +72,7 @@ public static class CategoryEndpoints
                 return Results.NotFound();
 
             return Results.NoContent();
-        }).RequireAuthorization().AddEndpointFilter<CsrfEndpointFilter>();
+        }).RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
 
         // Delete
         group.MapDelete("/{id:guid}", async (
@@ -83,7 +83,7 @@ public static class CategoryEndpoints
             var deleted = await sender.Send(new DeleteCategoryCommand(id), cancellationToken);
             if (!deleted) return Results.NotFound();
             return Results.NoContent();
-        }).RequireAuthorization().AddEndpointFilter<CsrfEndpointFilter>();
+        }).RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
         return endpoints;
     }
 }

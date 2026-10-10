@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();      //Whenever Application asks for ICurrentUserService, give it a CurrentUserService.
         services.AddScoped<ICartRepository, CartRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         return services;
