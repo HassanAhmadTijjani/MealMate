@@ -31,7 +31,7 @@ public static class FoodItemEndpoints
                         $"/api/food/{foodItemId}",
                         new {id = foodItemId}
                     );
-                }).RequireAuthorization().AddEndpointFilter<CsrfEndpointFilter>();
+                }).RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
 
         // Get all
         group.MapGet("", async (
@@ -73,7 +73,7 @@ public static class FoodItemEndpoints
                     return Results.NotFound();
 
                 return Results.NoContent();
-        }).RequireAuthorization().AddEndpointFilter<CsrfEndpointFilter>();
+        }).RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
 
         // Delete
         group.MapDelete("/{id:guid}", async (
@@ -82,7 +82,7 @@ public static class FoodItemEndpoints
             var deleted = await sender.Send(new DeleteFoodItemCommand(id), cancellationToken);
             if (!deleted) return Results.NotFound();
             return Results.NoContent();
-        }).RequireAuthorization().AddEndpointFilter<CsrfEndpointFilter>();
+        }).RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
         return endpoints;
     }
 }

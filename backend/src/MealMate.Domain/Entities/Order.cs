@@ -27,6 +27,7 @@ public class Order
     public DateTime CreatedAt { get; private set; }
 
     public DateTime UpdatedAt { get; private set; }
+    public DateTime PaymentExpiresAt { get; private set; }
 
     private Order() { }
 
@@ -43,20 +44,11 @@ public class Order
 
         if (deliveryFee < 0) throw new ArgumentException("Delivery fee cannot be negative.", nameof(deliveryFee));
 
-        if (orderType == OrderType.Delivery && string.IsNullOrWhiteSpace(deliveryAddress))
-        {
-            throw new ArgumentException("Delivery address is required for delivery orders.", nameof(deliveryAddress));
-        }
+        if (orderType == OrderType.Delivery && string.IsNullOrWhiteSpace(deliveryAddress)) throw new ArgumentException("Delivery address is required for delivery orders.", nameof(deliveryAddress));
 
-        if (orderType == OrderType.Pickup && !string.IsNullOrWhiteSpace(deliveryAddress))
-        {
-            throw new ArgumentException("Pickup orders cannot have a delivery address.", nameof(deliveryAddress));
-        }
+        if (orderType == OrderType.Pickup && !string.IsNullOrWhiteSpace(deliveryAddress)) throw new ArgumentException("Pickup orders cannot have a delivery address.", nameof(deliveryAddress));
 
-        if (orderType == OrderType.Pickup && deliveryFee > 0)
-        {
-            throw new ArgumentException("Pickup orders cannot have a delivery fee.", nameof(deliveryFee));
-        }
+        if (orderType == OrderType.Pickup && deliveryFee > 0) throw new ArgumentException("Pickup orders cannot have a delivery fee.", nameof(deliveryFee));
 
         Id = Guid.NewGuid();
         CustomerId = customerId;
@@ -72,19 +64,10 @@ public class Order
         var now = DateTime.UtcNow;
         CreatedAt = now;
         UpdatedAt = now;
+        PaymentExpiresAt = now.AddMinutes(15);
     }
 
-    public void MarkAsPaid()
-    {
-        PaymentStatus = PaymentStatus.Paid;
-        UpdatedAt = DateTime.UtcNow;
-    }
-
-    public void MarkPaymentAsFailed()
-    {
-        PaymentStatus = PaymentStatus.Failed;
-        UpdatedAt = DateTime.UtcNow;
-    }
+   
 
     // public void UpdateStatus(OrderStatus newOrderStatus)
     // {
@@ -92,17 +75,7 @@ public class Order
     //     UpdatedAt = DateTime.UtcNow;
     // }
 
-    public void Cancel()
-    {
-        if (OrderStatus is OrderStatus.Completed or OrderStatus.OutForDelivery or OrderStatus.Cancelled)
-        {
-            throw new InvalidOperationException("This order cannot be cancelled.");
-        }
-
-        OrderStatus = OrderStatus.Cancelled;
-
-        UpdatedAt = DateTime.UtcNow;
-    }
+   
 
     public void Confirm()
     {
@@ -131,11 +104,50 @@ public class Order
     }
     public void Complete()
     {
-        if (OrderType == OrderType.Pickup && OrderStatus != OrderStatus.Ready) throw new InvalidOperationException(  "Only ready pickup orders can be completed." );
+        if (OrderType == OrderType.Pickup && OrderStatus != OrderStatus.Ready) throw new InvalidOperationException("Only ready pickup orders can be completed.");
 
         if (OrderType == OrderType.Delivery && OrderStatus != OrderStatus.OutForDelivery) throw new InvalidOperationException("Only orders that are out for delivery can be completed.");
 
         OrderStatus = OrderStatus.Completed;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void Cancel()
+    {
+        if (OrderStatus is OrderStatus.Completed or OrderStatus.OutForDelivery or OrderStatus.Cancelled)
+        {
+            throw new InvalidOperationException("This order cannot be cancelled.");
+        }
+
+        OrderStatus = OrderStatus.Cancelled;
+
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void MarkAsPaid()
+    {
+        if (OrderStatus == OrderStatus.Cancelled) throw new InvalidOperationException("A cancelled order cannot receive payment.");
+        if (PaymentStatus == PaymentStatus.Paid) throw new InvalidOperationException("Payment has already been completed.");
+
+        PaymentStatus = PaymentStatus.Paid;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void MarkPaymentAsFailed()
+    {
+        if (OrderStatus == OrderStatus.Cancelled) throw new InvalidOperationException("A cancelled order cannot have a payment attempt.");
+
+        if (PaymentStatus == PaymentStatus.Paid) throw new InvalidOperationException("A completed payment cannot be marked as failed.");
+
+        PaymentStatus = PaymentStatus.Failed;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void ExpirePayment()
+    {
+        if (OrderStatus == OrderStatus.Cancelled) return;
+
+        if (PaymentStatus == PaymentStatus.Paid) return;
+
+        PaymentStatus = PaymentStatus.Failed;
+        OrderStatus = OrderStatus.Cancelled;
         UpdatedAt = DateTime.UtcNow;
     }
 }

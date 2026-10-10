@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 using MealMate.Api.Endpoints.FoodItem;
 using MealMate.Api.Endpoints.Category;
 using MealMate.Api.Endpoints.Profiles;
 using MealMate.Api.Endpoints.CustomerMenus;
 using MealMate.Api.Endpoints.CustomerCart;
+using MealMate.Api.Endpoints.CustomerOrders;
+using MealMate.Api.Common.Exceptions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,14 +70,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddAuthorization();
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddAuthorizationBuilder().AddPolicy("AdminOnly", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 var app = builder.Build();
+app.UseExceptionHandler();
 
-// Role Seeder
+// Identity Seeder
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    await IdentitySeeder.SeedRoleAsync(roleManager);
+    var roleManager =
+        scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var userManager =
+        scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    await IdentitySeeder.SeedRolesAsync(roleManager);
+
+    await IdentitySeeder.BootstrapAdminAsync(
+        userManager,
+        app.Configuration);
 }
 
 // EndPoints
@@ -85,6 +105,7 @@ app.MapCategoryEndpoints();
 app.MapCustomerProfileEndpoints();
 app.MapCustomerMenuEndpoints();
 app.MapCustomerCartEndpoints();
+app.MapCustomerOrderEndpoints();
 
 
 // CSRF Token
@@ -121,5 +142,3 @@ app.UseAuthorization();
 
 
 app.Run();
-
-
