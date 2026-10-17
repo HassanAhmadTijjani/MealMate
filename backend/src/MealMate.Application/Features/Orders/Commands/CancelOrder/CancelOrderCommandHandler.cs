@@ -34,6 +34,7 @@ ICurrentUserService CurrentUserService) : IRequestHandler<CancelOrderCommand, Or
         )).ToList();
         return new OrderResponse(
             order.Id,
+            order.OrderReference,
             order.OrderType,
             order.OrderStatus,
             order.PaymentStatus,

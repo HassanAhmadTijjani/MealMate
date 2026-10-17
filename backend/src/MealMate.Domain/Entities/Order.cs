@@ -5,6 +5,7 @@ namespace MealMate.Domain.Entities;
 public class Order
 {
     public Guid Id { get; private set; }
+    public string OrderReference { get; private set; } = string.Empty;
 
     public string CustomerId { get; private set; } = string.Empty;
 
@@ -51,6 +52,7 @@ public class Order
         if (orderType == OrderType.Pickup && deliveryFee > 0) throw new ArgumentException("Pickup orders cannot have a delivery fee.", nameof(deliveryFee));
 
         Id = Guid.NewGuid();
+        OrderReference = OrderRefrenceGenerator();
         CustomerId = customerId;
         OrderType = orderType;
         OrderStatus = OrderStatus.Pending;
@@ -64,18 +66,21 @@ public class Order
         var now = DateTime.UtcNow;
         CreatedAt = now;
         UpdatedAt = now;
-        PaymentExpiresAt = now.AddMinutes(15);
+        PaymentExpiresAt = now.AddMinutes(30);
     }
 
-   
+
 
     // public void UpdateStatus(OrderStatus newOrderStatus)
     // {
     //     OrderStatus = newOrderStatus;
     //     UpdatedAt = DateTime.UtcNow;
     // }
-
-   
+    public static string OrderRefrenceGenerator()
+    {
+        const string characters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        return "MM-" + new string([.. Enumerable.Range(0, 5).Select(_ => characters[Random.Shared.Next(characters.Length)])]);
+    }
 
     public void Confirm()
     {

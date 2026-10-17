@@ -32,6 +32,7 @@ public sealed record GetCustomerOrderQueryHandler(
 
         return new OrderResponse(
             order.Id,
+            order.OrderReference,
             order.OrderType,
             order.OrderStatus,
             order.PaymentStatus,

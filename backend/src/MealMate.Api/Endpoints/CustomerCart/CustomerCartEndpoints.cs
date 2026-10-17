@@ -36,6 +36,7 @@ public static class CustomerCartEndpoints
             return Results.Ok(result);
         });
 
+// Add to cart
         group.MapPost("/items", async (
             AddToCartRequest request,
             ISender sender,
@@ -52,6 +53,7 @@ public static class CustomerCartEndpoints
             return Results.Ok(result);
         });
 
+// Update Cart item
         group.MapPut("/items", async (
             UpdateCartItemRequest request,
             ISender sender,

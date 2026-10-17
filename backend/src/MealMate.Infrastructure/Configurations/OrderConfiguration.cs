@@ -10,6 +10,14 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
         builder.HasKey(order => order.Id);
 
+        builder.Property(order => order.OrderReference)
+            .IsRequired()
+            .HasMaxLength(8);
+
+        builder.HasIndex(order => order.OrderReference)
+            .IsUnique()
+            .HasDatabaseName("UX_Orders_OrderReference");
+
         builder.Property(order => order.CustomerId)
             .IsRequired();
 
