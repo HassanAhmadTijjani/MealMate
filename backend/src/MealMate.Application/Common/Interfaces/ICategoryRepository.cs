@@ -1,6 +1,7 @@
 using MealMate.Domain.Entities;
 
 namespace MealMate.Application.Common.Interfaces;
+
 public interface ICategoryRepository
 {
     Task<List<Category>> GetAllAsync();

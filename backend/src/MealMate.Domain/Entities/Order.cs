@@ -18,6 +18,7 @@ public class Order
     public string? DeliveryAddress { get; private set; }
 
     public ICollection<OrderItem> Items { get; private set; } = [];
+    public ICollection<PaymentSubmission> PaymentSubmissions { get; private set; } = [];
 
     public decimal ItemsSubtotal { get; private set; }
 
@@ -29,15 +30,11 @@ public class Order
 
     public DateTime UpdatedAt { get; private set; }
     public DateTime PaymentExpiresAt { get; private set; }
+    public DateTime? FirstPaymentSubmissionAt { get; private set; }
 
     private Order() { }
 
-    public Order(
-        string customerId,
-        OrderType orderType,
-        string? deliveryAddress,
-        decimal deliveryFee,
-        List<OrderItem> items)
+    public Order(string customerId, OrderType orderType, string? deliveryAddress, decimal deliveryFee, List<OrderItem> items)
     {
         if (string.IsNullOrWhiteSpace(customerId)) throw new ArgumentException("Customer ID is required.", nameof(customerId));
 
@@ -153,6 +150,74 @@ public class Order
 
         PaymentStatus = PaymentStatus.Failed;
         OrderStatus = OrderStatus.Cancelled;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void RecordFirstPaymentSubmission(DateTime submittedAt)
+    {
+        if (FirstPaymentSubmissionAt.HasValue ||
+            PaymentSubmissions.Count > 0)
+        {
+            throw new InvalidOperationException(
+                "The first payment submission already exists."
+            );
+        }
+
+        if (OrderStatus == OrderStatus.Cancelled)
+            throw new InvalidOperationException(
+                "A cancelled order cannot accept payment submissions."
+            );
+
+        if (PaymentStatus != PaymentStatus.Pending)
+            throw new InvalidOperationException(
+                "This order is not awaiting its first payment submission."
+            );
+
+        if (submittedAt > PaymentExpiresAt)
+            throw new InvalidOperationException(
+                "The payment deadline has passed."
+            );
+
+        FirstPaymentSubmissionAt = submittedAt;
+        PaymentStatus = PaymentStatus.AwaitingVerification;
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void RecordCorrectedPaymentSubmission(DateTime submittedAt)
+    {
+        if (!FirstPaymentSubmissionAt.HasValue)
+            throw new InvalidOperationException(
+                "An initial payment submission is required first."
+            );
+
+        if (OrderStatus == OrderStatus.Cancelled)
+            throw new InvalidOperationException(
+                "A cancelled order cannot accept payment submissions."
+            );
+
+        if (PaymentStatus != PaymentStatus.AwaitingVerification)
+            throw new InvalidOperationException(
+                "This order is not awaiting payment verification."
+            );
+
+        if (PaymentSubmissions.Count >= 2)
+            throw new InvalidOperationException(
+                "The maximum number of payment submissions has been reached."
+            );
+
+        var latestSubmission = PaymentSubmissions
+            .OrderByDescending(submission => submission.SubmittedAt)
+            .FirstOrDefault();
+
+        if (latestSubmission?.Status != PaymentSubmissionStatus.Rejected)
+            throw new InvalidOperationException(
+                "The previous submission must be rejected before submitting a correction."
+            );
+
+        if (submittedAt < FirstPaymentSubmissionAt.Value)
+            throw new InvalidOperationException(
+                "The correction timestamp cannot precede the first submission."
+            );
+
         UpdatedAt = DateTime.UtcNow;
     }
 }

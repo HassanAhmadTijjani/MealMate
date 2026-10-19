@@ -16,6 +16,7 @@ public class MealMateDbContext(DbContextOptions<MealMateDbContext> options)
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
     public DbSet<PaymentSettings> PaymentSettings => Set<PaymentSettings>();
+    public DbSet<PaymentSubmission> PaymentSubmissions => Set<PaymentSubmission>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
