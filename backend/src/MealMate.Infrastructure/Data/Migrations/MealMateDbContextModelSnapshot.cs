@@ -163,6 +163,11 @@ namespace MealMate.Infrastructure.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
+                    b.Property<string>("OrderReference")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
                     b.Property<string>("OrderStatus")
                         .IsRequired()
                         .HasColumnType("text");
@@ -188,6 +193,10 @@ namespace MealMate.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("OrderReference")
+                        .IsUnique()
+                        .HasDatabaseName("UX_Orders_OrderReference");
 
                     b.ToTable("Orders");
                 });
@@ -262,12 +271,22 @@ namespace MealMate.Infrastructure.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<int>("SettingsKey")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PaymentSettings");
+                    b.HasIndex("SettingsKey")
+                        .IsUnique()
+                        .HasDatabaseName("UX_PaymentSettings_SettingsKey");
+
+                    b.ToTable("PaymentSettings", t =>
+                        {
+                            t.HasCheckConstraint("CK_PaymentSettings_SettingsKey", "\"SettingsKey\" = 1");
+                        });
                 });
 
             modelBuilder.Entity("MealMate.Domain.Entities.Restaurant", b =>

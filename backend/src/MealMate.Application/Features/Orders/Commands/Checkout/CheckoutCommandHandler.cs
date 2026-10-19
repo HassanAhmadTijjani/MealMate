@@ -95,6 +95,7 @@ public sealed record CheckoutCommandHandler(
 
         return new OrderResponse(
             order.Id,
+            order.OrderReference,
             order.OrderType,
             order.OrderStatus,
             order.PaymentStatus,

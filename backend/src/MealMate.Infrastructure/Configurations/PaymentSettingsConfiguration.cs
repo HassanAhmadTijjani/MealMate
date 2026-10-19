@@ -11,6 +11,12 @@ public class PaymentSettingsConfiguration : IEntityTypeConfiguration<PaymentSett
     {
         builder.HasKey(paymentSetting => paymentSetting.Id);
         builder.Property(paymentSetting => paymentSetting.Id).ValueGeneratedNever();
+        builder.Property(paymentSetting => paymentSetting.SettingsKey)
+           .IsRequired()
+           .ValueGeneratedNever();
+
+        builder.ToTable(table =>table.HasCheckConstraint( "CK_PaymentSettings_SettingsKey", "\"SettingsKey\" = 1"));
+        builder.HasIndex(paymentSetting => paymentSetting.SettingsKey).IsUnique().HasDatabaseName("UX_PaymentSettings_SettingsKey");
         builder.Property(paymentSetting => paymentSetting.BankName).IsRequired().HasMaxLength(100);
         builder.Property(paymentSetting => paymentSetting.AccountName).IsRequired().HasMaxLength(150);
         builder.Property(paymentSetting => paymentSetting.AccountNumber).IsRequired().HasMaxLength(10).IsFixedLength();
