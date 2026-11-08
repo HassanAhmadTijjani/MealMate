@@ -16,6 +16,7 @@ using MealMate.Api.Endpoints.CustomerCart;
 using MealMate.Api.Endpoints.CustomerOrders;
 using MealMate.Api.Common.Exceptions;
 using MealMate.Api.Endpoints.PaymentSettings;
+using MealMate.Api.Endpoints.Payment;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -108,6 +109,7 @@ app.MapCustomerMenuEndpoints();
 app.MapCustomerCartEndpoints();
 app.MapCustomerOrderEndpoints();
 app.MapPaymentSettingsEndpoints();
+app.MapPaymentEndpoints();
 
 
 // CSRF Token

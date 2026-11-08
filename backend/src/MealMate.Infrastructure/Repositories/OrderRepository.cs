@@ -29,4 +29,23 @@ public class OrderRepository(MealMateDbContext context) : IOrderRepository
         _context.Orders.Update(order);
         await _context.SaveChangesAsync();
     }
+    public async Task<Order?> GetByIdWithPaymentSubmissionsAsync(
+    Guid orderId)
+    {
+        return await _context.Orders
+            .Include(order => order.Items)
+            .Include(order => order.PaymentSubmissions)
+            .FirstOrDefaultAsync(order => order.Id == orderId);
+    }
+
+    public async Task SavePaymentSubmissionAsync(
+        Order order,
+        PaymentSubmission submission)
+    {
+        await _context.PaymentSubmissions.AddAsync(submission);
+
+        // The order is already tracked by this DbContext.
+        // One SaveChanges persists both changes atomically.
+        await _context.SaveChangesAsync();
+    }
 }

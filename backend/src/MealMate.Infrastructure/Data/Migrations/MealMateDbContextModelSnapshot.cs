@@ -159,6 +159,9 @@ namespace MealMate.Infrastructure.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
 
+                    b.Property<DateTime?>("FirstPaymentSubmissionAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<decimal>("ItemsSubtotal")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
@@ -287,6 +290,50 @@ namespace MealMate.Infrastructure.Data.Migrations
                         {
                             t.HasCheckConstraint("CK_PaymentSettings_SettingsKey", "\"SettingsKey\" = 1");
                         });
+                });
+
+            modelBuilder.Entity("MealMate.Domain.Entities.PaymentSubmission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ReceiptStorageKey")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReviewedByAdminId")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .HasDatabaseName("IX_PaymentSubmissions_OrderId");
+
+                    b.HasIndex("OrderId", "SubmittedAt")
+                        .HasDatabaseName("IX_PaymentSubmissions_OrderId_SubmittedAt");
+
+                    b.ToTable("PaymentSubmissions");
                 });
 
             modelBuilder.Entity("MealMate.Domain.Entities.Restaurant", b =>
@@ -585,6 +632,17 @@ namespace MealMate.Infrastructure.Data.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("MealMate.Domain.Entities.PaymentSubmission", b =>
+                {
+                    b.HasOne("MealMate.Domain.Entities.Order", "Order")
+                        .WithMany("PaymentSubmissions")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -644,6 +702,8 @@ namespace MealMate.Infrastructure.Data.Migrations
             modelBuilder.Entity("MealMate.Domain.Entities.Order", b =>
                 {
                     b.Navigation("Items");
+
+                    b.Navigation("PaymentSubmissions");
                 });
 #pragma warning restore 612, 618
         }

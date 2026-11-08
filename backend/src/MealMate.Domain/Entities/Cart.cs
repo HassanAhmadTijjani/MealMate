@@ -9,8 +9,7 @@ public class Cart
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
-    public ICollection<CartItem> Items { get; private set; } =
-        [];
+    public ICollection<CartItem> Items { get; private set; } = [];
 
     private Cart()
     {
@@ -25,7 +24,7 @@ public class Cart
         CreatedAt = now;
         UpdatedAt = now;
     }
-    
+
     public void Touch()
     {
         UpdatedAt = DateTime.UtcNow;
