@@ -25,6 +25,23 @@ public class CartRepository(MealMateDbContext context) : ICartRepository
 
     public async Task UpdateAsync(Cart cart)
     {
+        Console.WriteLine("===== CART CHANGE TRACKING =====");
+
+        Console.WriteLine(
+            $"Cart ID: {cart.Id}, State: {_context.Entry(cart).State}"
+        );
+
+        foreach (var item in cart.Items)
+        {
+            Console.WriteLine(
+                $"CartItem ID: {item.Id}, " +
+                $"CartId: {item.CartId}, " +
+                $"FoodItemId: {item.FoodItemId}, " +
+                $"State: {_context.Entry(item).State}"
+            );
+        }
+
+        Console.WriteLine("================================");
         foreach (var item in cart.Items)
         {
             var entry = _context.Entry(item);

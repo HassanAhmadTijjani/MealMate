@@ -2,6 +2,7 @@ using MealMate.Application.Common.Interfaces;
 using MealMate.Infrastructure.Data;
 using MealMate.Infrastructure.Identity;
 using MealMate.Infrastructure.Repositories;
+using MealMate.Infrastructure.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IPaymentSettingsRepository, PaymentSettingsRepository>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IReceiptStorageService, LocalReceiptStorageService>();
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         return services;
     }

@@ -7,5 +7,7 @@ public interface IOrderRepository
     Task<Order?> GetByIdAsync(Guid orderId);
     Task<List<Order>> GetByCustomerIdAsync(string customerId);
     Task UpdateAsync(Order order);
+    Task<Order?> GetByIdWithPaymentSubmissionsAsync(Guid orderId);
+    Task SavePaymentSubmissionAsync(Order order, PaymentSubmission submission);
 
 }

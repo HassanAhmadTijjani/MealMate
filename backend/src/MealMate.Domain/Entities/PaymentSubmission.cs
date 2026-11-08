@@ -24,7 +24,7 @@ public class PaymentSubmission
 
     private PaymentSubmission() { }
 
-    public PaymentSubmission(Guid orderId, string receiptStorageKey)
+    public PaymentSubmission(Guid orderId, string receiptStorageKey, DateTime submittedAt)
     {
         if (orderId == Guid.Empty)
         {
@@ -44,7 +44,7 @@ public class PaymentSubmission
         OrderId = orderId;
         ReceiptStorageKey = receiptStorageKey;
         Status = PaymentSubmissionStatus.AwaitingReview;
-        SubmittedAt = DateTime.UtcNow;
+        SubmittedAt = submittedAt;
     }
     public void Reject(string reason, string adminId)
     {
