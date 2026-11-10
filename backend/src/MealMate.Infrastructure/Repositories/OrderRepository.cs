@@ -1,4 +1,5 @@
 using MealMate.Application.Common.Interfaces;
+using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrders;
 using MealMate.Domain.Entities;
 using MealMate.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -48,4 +49,28 @@ public class OrderRepository(MealMateDbContext context) : IOrderRepository
         // One SaveChanges persists both changes atomically.
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<AdminOrdersResponse>> GetAllForAdminAsync(CancellationToken cancellationToken)
+    {
+        var query = from order in _context.Orders.AsNoTracking()
+            join user in _context.Users.AsNoTracking()
+            on order.CustomerId equals user.Id into users
+            from customer in users.DefaultIfEmpty()
+            orderby order.CreatedAt descending
+            select new AdminOrdersResponse(
+                order.Id,
+                order.OrderReference,
+                customer == null ? null : (customer.FirstName + " " + customer.LastName).Trim(),
+                customer == null ? null : customer.Email,
+                customer == null ? null : customer.PhoneNumber,
+                order.OrderType,
+                order.OrderStatus,
+                order.PaymentStatus,
+                order.TotalAmount,
+                order.Items.Sum(item => (int?)item.Quantity) ?? 0,
+                order.CreatedAt);
+        return await query.ToListAsync(cancellationToken);
+
+    }
+
 }
