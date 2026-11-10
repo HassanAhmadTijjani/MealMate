@@ -2,11 +2,11 @@ using MealMate.Domain.Enums;
 
 namespace MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrders;
 
-public sealed record AdminOrderResponse(
+public sealed record AdminOrdersResponse(
 Guid Id,
-string OrderRefrence,
-string CustomerName,
-string CustomerEmail,
+string OrderReference,
+string? CustomerName,
+string? CustomerEmail,
 string? CustomerPhone,
 OrderType OrderType,
 OrderStatus OrderStatus,
