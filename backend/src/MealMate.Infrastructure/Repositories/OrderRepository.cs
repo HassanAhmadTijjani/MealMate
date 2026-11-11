@@ -1,4 +1,6 @@
 using MealMate.Application.Common.Interfaces;
+using MealMate.Application.Common.Models.Orders;
+using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrder;
 using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrders;
 using MealMate.Domain.Entities;
 using MealMate.Infrastructure.Data;
@@ -53,24 +55,77 @@ public class OrderRepository(MealMateDbContext context) : IOrderRepository
     public async Task<List<AdminOrdersResponse>> GetAllForAdminAsync(CancellationToken cancellationToken)
     {
         var query = from order in _context.Orders.AsNoTracking()
-            join user in _context.Users.AsNoTracking()
-            on order.CustomerId equals user.Id into users
-            from customer in users.DefaultIfEmpty()
-            orderby order.CreatedAt descending
-            select new AdminOrdersResponse(
-                order.Id,
-                order.OrderReference,
-                customer == null ? null : (customer.FirstName + " " + customer.LastName).Trim(),
-                customer == null ? null : customer.Email,
-                customer == null ? null : customer.PhoneNumber,
-                order.OrderType,
-                order.OrderStatus,
-                order.PaymentStatus,
-                order.TotalAmount,
-                order.Items.Sum(item => (int?)item.Quantity) ?? 0,
-                order.CreatedAt);
+                    join user in _context.Users.AsNoTracking()
+                    on order.CustomerId equals user.Id into users
+                    from customer in users.DefaultIfEmpty()
+                    orderby order.CreatedAt descending
+                    select new AdminOrdersResponse(
+                        order.Id,
+                        order.OrderReference,
+                        customer == null ? null : (customer.FirstName + " " + customer.LastName).Trim(),
+                        customer == null ? null : customer.Email,
+                        customer == null ? null : customer.PhoneNumber,
+                        order.OrderType,
+                        order.OrderStatus,
+                        order.PaymentStatus,
+                        order.TotalAmount,
+                        order.Items.Sum(item => (int?)item.Quantity) ?? 0,
+                        order.CreatedAt);
         return await query.ToListAsync(cancellationToken);
 
     }
+    public async Task<AdminOrderResponse?> GetByIdForAdminAsync(
+        Guid orderId,
+        CancellationToken cancellationToken)
+    {
+        var order = await _context.Orders
+            .AsNoTracking()
+            .Include(order => order.Items)
+            .FirstOrDefaultAsync(order => order.Id == orderId, cancellationToken);
 
+        if (order is null)
+        {
+            return null;
+        }
+
+        var customer = await _context.Users
+            .AsNoTracking()
+            .Where(user => user.Id == order.CustomerId)
+            .Select(user => new
+            {
+                user.FirstName,
+                user.LastName,
+                user.Email,
+                user.PhoneNumber
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var items = order.Items
+            .Select(item => new OrderItemResponse(
+                item.FoodItemId,
+                item.FoodItemName,
+                item.UnitPrice,
+                item.Quantity,
+                item.Subtotal))
+            .ToList();
+
+        return new AdminOrderResponse(
+            order.Id,
+            order.OrderReference,
+            customer is null
+                ? null
+                : $"{customer.FirstName} {customer.LastName}".Trim(),
+            customer?.Email,
+            customer?.PhoneNumber,
+            order.OrderType,
+            order.DeliveryAddress,
+            order.OrderStatus,
+            order.PaymentStatus,
+            items,
+            order.ItemsSubtotal,
+            order.DeliveryFee,
+            order.TotalAmount,
+            order.Items.Sum(item => item.Quantity),
+            order.CreatedAt);
+    }
 }

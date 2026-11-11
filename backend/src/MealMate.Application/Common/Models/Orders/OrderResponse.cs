@@ -4,7 +4,7 @@ namespace MealMate.Application.Common.Models.Orders;
 
 public sealed record OrderResponse(
     Guid Id,
-string OrderReference,
+    string OrderReference,
     OrderType OrderType,
     OrderStatus OrderStatus,
     PaymentStatus PaymentStatus,
