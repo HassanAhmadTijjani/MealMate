@@ -1,3 +1,4 @@
+using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrder;
 using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrders;
 using MealMate.Domain.Entities;
 
@@ -11,5 +12,8 @@ public interface IOrderRepository
     Task<Order?> GetByIdWithPaymentSubmissionsAsync(Guid orderId);
     Task SavePaymentSubmissionAsync(Order order, PaymentSubmission submission);
     Task<List<AdminOrdersResponse>> GetAllForAdminAsync(CancellationToken cancellationToken);
+    Task<AdminOrderResponse?> GetByIdForAdminAsync(
+    Guid orderId,
+    CancellationToken cancellationToken);
 
 }
