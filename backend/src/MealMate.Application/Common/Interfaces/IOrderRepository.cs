@@ -1,6 +1,7 @@
 using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrder;
 using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrders;
 using MealMate.Domain.Entities;
+using MealMate.Domain.Enums;
 
 namespace MealMate.Application.Common.Interfaces;
 public interface IOrderRepository
@@ -11,7 +12,7 @@ public interface IOrderRepository
     Task UpdateAsync(Order order);
     Task<Order?> GetByIdWithPaymentSubmissionsAsync(Guid orderId);
     Task SavePaymentSubmissionAsync(Order order, PaymentSubmission submission);
-    Task<List<AdminOrdersResponse>> GetAllForAdminAsync(CancellationToken cancellationToken);
+    Task<List<AdminOrdersResponse>> GetAllForAdminAsync(OrderStatus? status, CancellationToken cancellationToken);
     Task<AdminOrderResponse?> GetByIdForAdminAsync(
     Guid orderId,
     CancellationToken cancellationToken);

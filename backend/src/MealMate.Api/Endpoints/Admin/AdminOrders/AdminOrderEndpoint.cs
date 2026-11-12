@@ -1,6 +1,7 @@
 using MealMate.Api.Security;
 using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrder;
 using MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrders;
+using MealMate.Domain.Enums;
 using MediatR;
 
 namespace MealMate.Api.Endpoints.Admin.AdminOrders;
@@ -11,10 +12,16 @@ public static class AdminOrderEndpoint
     {
         var group = endpoints.MapGroup("/api/admin/orders").RequireAuthorization("AdminOnly").AddEndpointFilter<CsrfEndpointFilter>();
 
-        // GET: all orders
-        group.MapGet("", async (ISender sender, CancellationToken cancellationToken) =>
+        // GET: all orders or filtered orders by status
+        group.MapGet("", async (
+            OrderStatus? status,
+            ISender sender,
+          CancellationToken cancellationToken) =>
         {
-            var result = await sender.Send(new GetAdminOrdersQuery(), cancellationToken);
+            var result = await sender.Send(
+                new GetAdminOrdersQuery(status),
+                cancellationToken);
+
             return Results.Ok(result);
         });
 
