@@ -7,6 +7,6 @@ public sealed class GetAdminOrdersQueryHandler(IOrderRepository orderRepository)
 {
     public Task<List<AdminOrdersResponse>> Handle(GetAdminOrdersQuery request, CancellationToken cancellationToken)
     {
-        return orderRepository.GetAllForAdminAsync(cancellationToken);
+        return orderRepository.GetAllForAdminAsync(request.Status, cancellationToken);
     }
 }
