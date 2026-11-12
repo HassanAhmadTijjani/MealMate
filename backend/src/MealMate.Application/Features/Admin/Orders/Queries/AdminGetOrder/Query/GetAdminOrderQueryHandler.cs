@@ -3,7 +3,7 @@ using MealMate.Application.Common.Models.Orders;
 using MealMate.Domain.Entities;
 using MediatR;
 
-namespace MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrder;
+namespace MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrder.Query;
 
 public sealed record GetAdminOrderQueryHandler(IOrderRepository OrderRepository) : IRequestHandler<GetAdminOrderQuery, AdminOrderResponse>
 {
