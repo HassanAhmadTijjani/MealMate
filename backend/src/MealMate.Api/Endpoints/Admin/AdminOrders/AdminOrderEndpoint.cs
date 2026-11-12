@@ -13,6 +13,8 @@ using MediatR;
 
 namespace MealMate.Api.Endpoints.Admin.AdminOrders;
 
+public sealed record MarkOrderAsFailedRequest(string Reason);
+
 public static class AdminOrderEndpoint
 {
     public static IEndpointRouteBuilder MapAdminOrderEndpoints(
@@ -125,10 +127,14 @@ public static class AdminOrderEndpoint
         // MARK-AS-FAILED
         group.MapPatch("/{orderId:guid}/payment-failed", async (
             Guid orderId,
+            MarkOrderAsFailedRequest request,
             ISender sender,
             CancellationToken cancellationToken) =>
         {
-            var result = await sender.Send(new MarkOrderAsFailedCommand(orderId), cancellationToken);
+            var result = await sender.Send(
+                new MarkOrderAsFailedCommand(orderId, request.Reason),
+                cancellationToken);
+
             return Results.Ok(result);
         });
 

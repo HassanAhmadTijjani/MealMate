@@ -133,11 +133,13 @@ public class Order
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void MarkPaymentAsFailed()
+    public void MarkPaymentAsFailed(string reason)
     {
         if (OrderStatus == OrderStatus.Cancelled) throw new InvalidOperationException("A cancelled order cannot have a payment attempt.");
 
         if (PaymentStatus == PaymentStatus.Paid) throw new InvalidOperationException("A completed payment cannot be marked as failed.");
+
+        if (string.IsNullOrWhiteSpace(reason)) throw new ArgumentException("A rejection reason is required.", nameof(reason));
 
         PaymentStatus = PaymentStatus.Failed;
         UpdatedAt = DateTime.UtcNow;
