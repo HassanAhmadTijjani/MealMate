@@ -1,20 +1,36 @@
 using MealMate.Application.Common.Interfaces;
 using MealMate.Application.Common.Models.Orders;
 using MealMate.Domain.Entities;
+using MealMate.Domain.Enums;
 using MediatR;
 
 namespace MealMate.Application.Features.Admin.Orders.Queries.AdminGetOrder.Commands.MarkAsFailed;
 
-public sealed record MarkOrderAsFailedCommandHandler(IOrderRepository OrderRepository) : IRequestHandler<MarkOrderAsFailedCommand, OrderResponse>
+public sealed record MarkOrderAsFailedCommandHandler(
+    IOrderRepository OrderRepository,
+    ICurrentUserService CurrentUserService) : IRequestHandler<MarkOrderAsFailedCommand, OrderResponse>
 {
     private readonly IOrderRepository _orderRepository = OrderRepository;
+    private readonly ICurrentUserService _currentUserService = CurrentUserService;
 
     public async Task<OrderResponse> Handle(MarkOrderAsFailedCommand request, CancellationToken cancellationToken)
     {
-        var order = await _orderRepository.GetByIdAsync(request.OrderId)
+        var adminId = _currentUserService.UserId
+            ?? throw new UnauthorizedAccessException("Admin user is not authenticated.");
+
+        var order = await _orderRepository.GetByIdWithPaymentSubmissionsAsync(request.OrderId)
             ?? throw new KeyNotFoundException("Order not found");
 
-        order.MarkPaymentAsFailed();
+        var latestSubmission = order.PaymentSubmissions
+            .OrderByDescending(submission => submission.SubmittedAt)
+            .FirstOrDefault();
+
+        if (latestSubmission is not null && latestSubmission.Status == PaymentSubmissionStatus.AwaitingReview)
+        {
+            latestSubmission.Reject(request.Reason, adminId);
+        }
+
+        order.MarkPaymentAsFailed(request.Reason);
         await _orderRepository.UpdateAsync(order);
 
         return MapToResponse(order);
